@@ -34,9 +34,11 @@ function getContactById(contactId) {
 function removeContact(contactId) {
   return fs.readFile(contactsPath, "utf-8").then((data) => {
     const contacts = JSON.parse(data);
-    const newContacts = contacts.filter((cont) => {
-      cont.id !== contactId;
-    });
+    const index = contacts.findIndex(({ id }) => id === contactId);
+    if (index === -1) {
+      throw new Error(`Contact with id=${contactId} not found`);
+    }
+    const newContacts = contacts.filter(({ id }) => id !== contactId);
     return fs.writeFile(contactsPath, JSON.stringify(newContacts));
   });
 }
